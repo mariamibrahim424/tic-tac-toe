@@ -88,6 +88,7 @@ function determineWinner() {
 
         if(a === b && b===c){
             playerStatus.innerHTML = `${a.toUpperCase()} is the winner!`;
+            celebrate();
             winner = a;
             disable();
             document.getElementById("multi").style.visibility = "visible";
@@ -109,4 +110,11 @@ function disable(){
         node.removeEventListener('click',playMulti);
         node.removeEventListener('click',playSingle);
     }
+}
+function celebrate() {
+    confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 }
+    });
 }
