@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>TicTacToe</title>
+    <link href="ttt.css" rel="stylesheet"/> 
+    <script type="text/javascript" src="ttt.js"></script>
+</head> 
+<body>
+<div class = 'title'>Tic-Tac-Toe</div>  
+<div class = 'game'>
+    <button id = "multi" onclick= "startgame(id)">multiplayer</button>
+    <button id = "single" onclick= "startgame(id)">single player</button>
+</div>
+<div class='grid'>
+  <div class = "unit1 rightborder bottomborder" id ='1' style="visibility: hidden;"></div>
+  <div class = "unit2 rightborder bottomborder" id ='2' style="visibility: hidden;"></div>
+  <div class = "unit3 bottomborder" id ='3' style="visibility: hidden;"></div>
+  <div class = "unit4 rightborder bottomborder" id ='4' style="visibility: hidden;"></div>
+  <div class = "unit5 rightborder bottomborder" id ='5'style="visibility: hidden;"></div>
+  <div class = "unit6 bottomborder" id ='6'style="visibility: hidden;"></div>
+  <div class = "unit7 rightborder" id ='7'style="visibility: hidden;"></div>
+  <div class = "unit8 rightborder" id ='8'style="visibility: hidden;"></div>
+  <div class = "unit9" id ='9' style="visibility: hidden;"></div>
+</div>
+<div id = "turn"></div>
+<script>
+  function startgame(id){
+    document.getElementById("multi").style.visibility = "hidden"
+    document.getElementById("single").style.visibility = "hidden"
+    setupgame(id)
+  } 
+</script>
+</body>
+</html>   
