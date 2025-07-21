@@ -38,7 +38,7 @@ function setupgame(id){
     currentPlayer = 'x';
     playerStatus.innerHTML = 'X turn...'
 }
-
+// Play with AI
 function playSingle(){
     this.innerHTML = currentPlayer.toUpperCase();
     let index = parseInt(this.id);
@@ -50,8 +50,7 @@ function playSingle(){
     determineWinner();
     sleep(500).then(() => { 
         if (moves.length > 0 && winner == null){
-            var item = moves[Math.floor(Math.random()*moves.length)];
-            determineWinner();
+            var item = getBestMove(gameState.slice(), currentPlayer);
             let node = document.getElementById(item);
             node.innerHTML = currentPlayer.toUpperCase();
             let index = parseInt(node.id);
@@ -64,7 +63,7 @@ function playSingle(){
         }
     });
 }
-
+// Play with a friend
 function playMulti(){
     this.innerHTML = currentPlayer.toUpperCase();
     let index = parseInt(this.id);
@@ -75,7 +74,7 @@ function playMulti(){
     playerStatus.innerHTML = `${currentPlayer.toUpperCase()} turn...`;
     determineWinner();
 }
-
+// Checks if there's a winner or draw
 function determineWinner() {
     for (let i=0; i < 8; i++) {
         const winCondition = winningConditions[i];
@@ -111,10 +110,87 @@ function disable(){
         node.removeEventListener('click',playSingle);
     }
 }
+// Confetti
 function celebrate() {
     confetti({
         particleCount: 150,
         spread: 70,
         origin: { y: 0.6 }
     });
+}
+
+// Returns the best move for the AI using minimax
+function getBestMove(state, player) {
+    let bestScore = -Infinity; 
+    let bestMove = null;
+
+    for (let i = 1; i <= 9; i++) {
+        if (state[i] === '') { // check if the current position is empty 
+            state[i] = player; // try playing this position 
+            let score = minimax(state, 0, false, player); // check the score for position
+            state[i] = ''; // reset position back to empty
+            // update values if better score is found
+            if (score > bestScore) {
+                bestScore = score; 
+                bestMove = i;
+            }
+        }
+    }
+    return bestMove;
+}
+
+// Minimax algo
+// state: copy of current board array
+// depth: game depth (used to find faster wins)
+// isMaximizing: true is AI's turn, false is pponent's turn
+// aiPlayer: X or O
+function minimax(state, depth, isMaximizing, aiPlayer) {
+    const opponent = aiPlayer === 'x' ? 'o' : 'x';
+    const result = checkWinner(state);
+    // game is over
+    if (result !== null) {
+        const scores = {};
+        scores[aiPlayer] = 10 - depth;
+        scores[opponent] = depth - 10;
+        scores['draw'] = 0;
+        return scores[result];
+    }
+
+    if (isMaximizing) {
+        let bestScore = -Infinity;
+        for (let i = 1; i <= 9; i++) {
+            if (state[i] === '') {
+                state[i] = aiPlayer;
+                let score = minimax(state, depth + 1, false, aiPlayer);
+                state[i] = '';
+                bestScore = Math.max(score, bestScore);
+            }
+        }
+        return bestScore;
+    } else {
+        let bestScore = Infinity;
+        for (let i = 1; i <= 9; i++) {
+            if (state[i] === '') {
+                state[i] = opponent;
+                let score = minimax(state, depth + 1, true, aiPlayer);
+                state[i] = '';
+                bestScore = Math.min(score, bestScore);
+            }
+        }
+        return bestScore;
+    }
+}
+
+// Checks if there's a winner or draw on the given state (minimax)
+function checkWinner(state) {
+    for (let i = 0; i < winningConditions.length; i++) {
+        const [a, b, c] = winningConditions[i];
+        if (state[a] && state[a] === state[b] && state[a] === state[c]) {
+            return state[a]; // returns 'x' or 'o'
+        }
+    }
+    if (!state.includes('')) { // no empty state left
+        return 'draw';
+    }
+    return null; // game not finished
 }
